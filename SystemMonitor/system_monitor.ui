@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SystemMonitor</class>
+ <widget class="QMainWindow" name="SystemMonitor">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>System Monitor</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="0">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tabProcessos">
+       <attribute name="title">
+        <string>Processos</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="tabRecursos">
+       <attribute name="title">
+        <string>Recursos</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="tabEnergia">
+       <attribute name="title">
+        <string>Energia</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

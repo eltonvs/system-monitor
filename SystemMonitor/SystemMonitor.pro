@@ -13,9 +13,9 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
            system_monitor.cpp \
-           qcustomplot/qcustomplot.cpp
+           qcustomplot.cpp
 
 HEADERS  += system_monitor.h \
-            qcustomplot/qcustomplot.h
+            qcustomplot.h
 
 FORMS    += system_monitor.ui

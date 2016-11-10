@@ -1,10 +1,5 @@
 #include "info_memory.h"
 
-#include <iostream>
-#include <fstream>
-#include <QHash>
-#include <QTextStream>
-
 void InfoMemory::calculate() {
     this->openFile();
 

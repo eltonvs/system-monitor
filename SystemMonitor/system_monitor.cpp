@@ -28,10 +28,10 @@ SystemMonitor::~SystemMonitor() {
 //
 
 void SystemMonitor::initChartCPU() {
-    unsigned nCPUs = std::thread::hardware_concurrency();
+    int nCPUs = icpu.getNumCPUs();
 
     // Create pens for each CPU and set his name
-    for (auto i = 0u; i < nCPUs; i++) {
+    for (int i = 0; i < nCPUs; i++) {
         ui->chartCPU->addGraph();
         ui->chartCPU->graph(i)->setPen(QPen(availableColors.at(i)));
         ui->chartCPU->graph(i)->setName("CPU " + QString::number(i + 1));
@@ -42,7 +42,7 @@ void SystemMonitor::initChartCPU() {
     ui->chartCPU->axisRect()->setupFullAxesBox();
 
     // Set y axis
-    ui->chartCPU->yAxis->setRange(0, 1);
+    ui->chartCPU->yAxis->setRange(-0.5, 100.5);
 
     // Legend Settings
     ui->chartCPU->legend->setVisible(true);
@@ -74,7 +74,7 @@ void SystemMonitor::initChartMemory() {
     ui->chartMemory->axisRect()->setupFullAxesBox();
 
     // Set y axis
-    ui->chartMemory->yAxis->setRange(0, 1);
+    ui->chartMemory->yAxis->setRange(-0.5, 100.5);
 
     // Legend Settings
     ui->chartMemory->legend->setVisible(true);
@@ -151,17 +151,14 @@ void SystemMonitor::initChartDischarge() {
 void SystemMonitor::updateChartCPU() {
     static QTime time(QTime::currentTime());
     double key = time.elapsed()/1000.0;
-    double value0 = qSin(key) + 1;
-    double value1 = qCos(key) + 1;
 
     // add data to lines:
-    ui->chartCPU->graph(0)->addData(key, value0/2.0);
-    ui->chartCPU->graph(1)->addData(key, value1/2.0);
-    ui->chartCPU->graph(2)->addData(key, 0.75);
-    ui->chartCPU->graph(3)->addData(key, 0.25);
+    icpu.calculate();
+    for (int i = 0; i < icpu.getNumCPUs(); i++)
+        ui->chartCPU->graph(i)->addData(key, icpu.getAverageCPU(i)*100.0);
 
     // make key axis range scroll with the data (at a constant range size of 8):
-    ui->chartCPU->xAxis->setRange(key, 8, Qt::AlignRight);
+    ui->chartCPU->xAxis->setRange(key, 60, Qt::AlignRight);
     ui->chartCPU->replot();
 }
 
@@ -172,11 +169,11 @@ void SystemMonitor::updateChartMemory() {
     double key = time.elapsed()/1000.0;
 
     // add data to lines:
-    ui->chartMemory->graph(0)->addData(key, im.getRAMPercentage());
-    ui->chartMemory->graph(1)->addData(key, im.getSwapPercentage());
+    ui->chartMemory->graph(0)->addData(key, im.getRAMPercentage()*100.0);
+    ui->chartMemory->graph(1)->addData(key, im.getSwapPercentage()*100.0);
 
     // make key axis range scroll with the data (at a constant range size of 8):
-    ui->chartMemory->xAxis->setRange(key, 8, Qt::AlignRight);
+    ui->chartMemory->xAxis->setRange(key, 60, Qt::AlignRight);
     ui->chartMemory->replot();
 }
 
@@ -189,7 +186,7 @@ void SystemMonitor::updateChartCharge() {
     ui->chartCharge->graph(0)->addData(key, value/2.0);
 
     // make key axis range scroll with the data (at a constant range size of 8):
-    ui->chartCharge->xAxis->setRange(key, 8, Qt::AlignRight);
+    ui->chartCharge->xAxis->setRange(key, 60, Qt::AlignRight);
     ui->chartCharge->replot();
 }
 
@@ -202,6 +199,6 @@ void SystemMonitor::updateChartDischarge() {
     ui->chartDischarge->graph(0)->addData(key, value/2.0);
 
     // make key axis range scroll with the data (at a constant range size of 8):
-    ui->chartDischarge->xAxis->setRange(key, 8, Qt::AlignRight);
+    ui->chartDischarge->xAxis->setRange(key, 60, Qt::AlignRight);
     ui->chartDischarge->replot();
 }

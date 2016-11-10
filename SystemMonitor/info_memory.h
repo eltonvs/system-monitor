@@ -2,6 +2,8 @@
 #define INFOMEMORY_H
 
 #include <QFile>
+#include <QHash>
+#include <QVector>
 
 class InfoMemory {
  public:

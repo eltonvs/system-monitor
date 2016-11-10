@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTimer>
 #include <thread>
+#include "info_memory.h"
 
 namespace Ui {
 class SystemMonitor;
@@ -33,6 +34,8 @@ class SystemMonitor : public QMainWindow {
     QTimer timerCharge;
     QTimer timerDischarge;
     QVector<QColor> availableColors;
+
+    InfoMemory im;
 };
 
 #endif // SYSTEM_MONITOR_H

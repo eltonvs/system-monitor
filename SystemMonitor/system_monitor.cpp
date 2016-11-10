@@ -166,14 +166,14 @@ void SystemMonitor::updateChartCPU() {
 }
 
 void SystemMonitor::updateChartMemory() {
+    im.calculate();
+
     static QTime time(QTime::currentTime());
     double key = time.elapsed()/1000.0;
-    double value0 = qSin(key) + 1;
-    double value1 = qCos(key) + 1;
 
     // add data to lines:
-    ui->chartMemory->graph(0)->addData(key, value0/2.0);
-    ui->chartMemory->graph(1)->addData(key, value1/2.0);
+    ui->chartMemory->graph(0)->addData(key, im.getRAMPercentage());
+    ui->chartMemory->graph(1)->addData(key, im.getSwapPercentage());
 
     // make key axis range scroll with the data (at a constant range size of 8):
     ui->chartMemory->xAxis->setRange(key, 8, Qt::AlignRight);

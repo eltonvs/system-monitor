@@ -28,13 +28,13 @@ class SystemMonitor : public QMainWindow {
  signals:
     void slotUpdateChartCPU(QVector<double>);
     void slotUpdateChartCharge(int);
-    void slotUpdateChartDischarge(long);
+    void slotUpdateChartDischarge(double);
     void slotUpdateChartMemory(double, double);
 
  private slots:
     void updateChartCPU(QVector<double>);
     void updateChartCharge(int);
-    void updateChartDischarge(long);
+    void updateChartDischarge(double);
     void updateChartMemory(double, double);
 
  private:

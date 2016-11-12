@@ -10,7 +10,7 @@ class InfoBattery {
     InfoBattery() {}
     void calculate();
     int getCurrCharge();
-    long getDischargeTime();
+    double getDischargeTime();
 
  private:
     bool openFile();

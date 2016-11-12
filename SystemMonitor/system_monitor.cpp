@@ -17,7 +17,7 @@ SystemMonitor::SystemMonitor(QWidget *parent) : QMainWindow(parent), ui(new Ui::
     qRegisterMetaType<QVector<double> >("QVector<double>");
     connect(this, SIGNAL(slotUpdateChartCPU(QVector<double>)), SLOT(updateChartCPU(QVector<double>)));
     connect(this, SIGNAL(slotUpdateChartCharge(int)), SLOT(updateChartCharge(int)));
-    connect(this, SIGNAL(slotUpdateChartDischarge(long)), SLOT(updateChartDischarge(long)));
+    connect(this, SIGNAL(slotUpdateChartDischarge(double)), SLOT(updateChartDischarge(double)));
     connect(this, SIGNAL(slotUpdateChartMemory(double,double)), SLOT(updateChartMemory(double, double)));
 
     // Init Charts
@@ -113,7 +113,7 @@ void SystemMonitor::initChartCharge() {
     ui->chartCharge->axisRect()->setupFullAxesBox();
 
     // Set y axis
-    ui->chartCharge->yAxis->setRange(-0.5, 100.5);
+    ui->chartCharge->yAxis->setRange(-0.1, 100.1);
 
     // Legend Settings
     ui->chartCharge->legend->setVisible(true);
@@ -136,7 +136,10 @@ void SystemMonitor::initChartDischarge() {
     ui->chartDischarge->axisRect()->setupFullAxesBox();
 
     // Set y axis
-    ui->chartDischarge->yAxis->setRange(-0.5, 600.5);
+    QSharedPointer<QCPAxisTickerTime> timeTicker(new QCPAxisTickerTime);
+    ui->chartDischarge->yAxis->setTicker(timeTicker);
+    ui->chartDischarge->yAxis->setRange(5, 60*60*5 + 5);
+    timeTicker->setTimeFormat("%h hora(s)");
 
     // Legend Settings
     ui->chartDischarge->legend->setVisible(true);
@@ -228,7 +231,7 @@ void SystemMonitor::updateChartCharge(int charge) {
     ui->chartCharge->replot();
 }
 
-void SystemMonitor::updateChartDischarge(long discharge) {
+void SystemMonitor::updateChartDischarge(double discharge) {
     static QTime time(QTime::currentTime());
     double key = time.elapsed()/1000.0;
 

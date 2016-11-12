@@ -15,8 +15,8 @@ int InfoBattery::getCurrCharge() {
     return currCharge;
 }
 
-long InfoBattery::getDischargeTime() {
-    return dischargeTime;
+double InfoBattery::getDischargeTime() {
+    return dischargeTime*60.0;
 }
 
 bool InfoBattery::openFile() {

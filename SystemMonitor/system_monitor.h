@@ -19,23 +19,38 @@ class SystemMonitor : public QMainWindow {
  public:
     explicit SystemMonitor(QWidget *parent = 0);
     ~SystemMonitor();
+    void run();
     void initChartCPU();
-    void initChartMemory();
     void initChartCharge();
     void initChartDischarge();
+    void initChartMemory();
+
+ signals:
+    void slotUpdateChartCPU(QVector<double>);
+    void slotUpdateChartCharge(int);
+    void slotUpdateChartDischarge(long);
+    void slotUpdateChartMemory(double, double);
 
  private slots:
-    void updateChartCPU();
-    void updateChartMemory();
-    void updateChartCharge();
-    void updateChartDischarge();
+    void updateChartCPU(QVector<double>);
+    void updateChartCharge(int);
+    void updateChartDischarge(long);
+    void updateChartMemory(double, double);
 
  private:
+    void chartCPU();
+    void chartCharge();
+    void chartDischarge();
+    void chartMemory();
+
     Ui::SystemMonitor *ui;
-    QTimer timerCPU;
-    QTimer timerMemory;
-    QTimer timerCharge;
-    QTimer timerDischarge;
+
+    std::thread threadCPU;
+    std::thread threadCharge;
+    std::thread threadDischarge;
+    std::thread threadMemory;
+
+    bool fst;
     QVector<QColor> availableColors;
 
     InfoBattery ib;

@@ -26,7 +26,7 @@ void InfoCPU::calculate() {
             el = dataList.at(i).split(" ");
             usageCPU[i - 1] = el.at(1).toInt() + el.at(2).toInt() + el.at(3).toInt() + el.at(4).toInt();
             totCPU[i - 1] = usageCPU.at(i - 1) + el.at(5).toInt();
-            std::cout << usageCPU[i - 1] << " | " << totCPU[i - 1] << "\n";
+            // std::cout << usageCPU[i - 1] << " | " << totCPU[i - 1] << "\n";
         }
     }
 }

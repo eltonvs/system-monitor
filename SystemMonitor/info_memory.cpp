@@ -1,21 +1,20 @@
 #include "info_memory.h"
 
 void InfoMemory::calculate() {
-    this->openFile();
+    if (openFile()) {
+        QStringList el, dataList = fileData.split("\n");
+        QHash<QString, int> data;
 
-    QStringList el, dataList = fileData.split("\n");
-    QHash<QString, int> data;
+        for (int i = 0; i < dataList.size() - 1; i++) {
+            el = dataList.at(i).split(":");
+            data.insert(el.at(0).simplified(), el.at(1).simplified().remove("kB").toInt());
+        }
 
-    for (int i = 0; i < dataList.size() - 1; i++) {
-        el = dataList.at(i).split(":");
-        data.insert(el.at(0).simplified(), el.at(1).simplified().remove("kB").toInt());
+        totRAM = data.value("MemTotal");
+        totSwap = data.value("SwapTotal");
+        usageRAM = totRAM  - data.value("MemFree");
+        usageSwap = totSwap - data.value("SwapFree");
     }
-
-    totRAM = data.value("MemTotal");
-    totSwap = data.value("SwapTotal");
-    usageRAM = totRAM  - data.value("MemFree");
-    usageSwap = totSwap - data.value("SwapFree");
-
 }
 
 bool InfoMemory::openFile() {

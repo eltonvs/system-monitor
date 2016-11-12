@@ -101,7 +101,7 @@ void SystemMonitor::initChartCharge() {
     ui->chartCharge->axisRect()->setupFullAxesBox();
 
     // Set y axis
-    ui->chartCharge->yAxis->setRange(0, 1);
+    ui->chartCharge->yAxis->setRange(-0.5, 100.5);
 
     // Legend Settings
     ui->chartCharge->legend->setVisible(true);
@@ -128,7 +128,7 @@ void SystemMonitor::initChartDischarge() {
     ui->chartDischarge->axisRect()->setupFullAxesBox();
 
     // Set y axis
-    ui->chartDischarge->yAxis->setRange(0, 1);
+    ui->chartDischarge->yAxis->setRange(-0.5, 600.5);
 
     // Legend Settings
     ui->chartDischarge->legend->setVisible(true);
@@ -180,10 +180,11 @@ void SystemMonitor::updateChartMemory() {
 void SystemMonitor::updateChartCharge() {
     static QTime time(QTime::currentTime());
     double key = time.elapsed()/1000.0;
-    double value = qSin(key) + 1;
+
+    ib.calculate();
 
     // add data to lines:
-    ui->chartCharge->graph(0)->addData(key, value/2.0);
+    ui->chartCharge->graph(0)->addData(key, ib.getCurrCharge());
 
     // make key axis range scroll with the data (at a constant range size of 8):
     ui->chartCharge->xAxis->setRange(key, 60, Qt::AlignRight);
@@ -193,10 +194,11 @@ void SystemMonitor::updateChartCharge() {
 void SystemMonitor::updateChartDischarge() {
     static QTime time(QTime::currentTime());
     double key = time.elapsed()/1000.0;
-    double value = qCos(key) + 1;
+
+    ib.calculate();
 
     // add data to lines:
-    ui->chartDischarge->graph(0)->addData(key, value/2.0);
+    ui->chartDischarge->graph(0)->addData(key, ib.getDischargeTime());
 
     // make key axis range scroll with the data (at a constant range size of 8):
     ui->chartDischarge->xAxis->setRange(key, 60, Qt::AlignRight);

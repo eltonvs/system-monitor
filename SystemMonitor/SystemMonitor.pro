@@ -25,3 +25,5 @@ HEADERS  += system_monitor.h \
             info_memory.h \
 
 FORMS    += system_monitor.ui
+
+CONFIG   += c++11

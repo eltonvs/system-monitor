@@ -1,15 +1,21 @@
 #include "info_cpu.h"
 #include <iostream>
+#include <unistd.h>
 
 InfoCPU::InfoCPU() {
-    numCPUs = -1;
+    numCPUs = 0;
+
     if (openFile()) {
-        QStringList dataList = fileData.split("\n");
-        for (int i = 0; i < dataList.size() - 1; i++) {
-            QString line = dataList.at(i);
-            if (line[0] == 'c' && line[1] == 'p' && line[2] == 'u')
+        QStringList el, dataList = fileData.split("\n");
+        for (int i = 1; i < dataList.size() - 1; i++) {
+            el = dataList.at(i).split(" ");
+            if (el.at(0).contains("cpu")) {
                 numCPUs++;
-            else break;
+                prevUsageCPU.append(el.at(1).toInt() + el.at(2).toInt() + el.at(3).toInt());
+                prevTotCPU.append(el.at(1).toInt() + el.at(2).toInt() + el.at(3).toInt() + el.at(4).toInt() + el.at(5).toInt());
+            } else {
+                break;
+            }
         }
 
         usageCPU.resize(numCPUs);
@@ -20,13 +26,13 @@ InfoCPU::InfoCPU() {
 void InfoCPU::calculate() {
     if (openFile()) {
         QStringList el, dataList = fileData.split("\n");
-        for (int i = 0; i < dataList.size() - 1; i++) {
-            if (i == 0) continue;
+        for (int i = 1; i < dataList.size() - 1; i++) {
             if (i > numCPUs) break;
             el = dataList.at(i).split(" ");
-            usageCPU[i - 1] = el.at(1).toInt() + el.at(2).toInt() + el.at(3).toInt() + el.at(4).toInt();
-            totCPU[i - 1] = usageCPU.at(i - 1) + el.at(5).toInt();
-            // std::cout << usageCPU[i - 1] << " | " << totCPU[i - 1] << "\n";
+            prevUsageCPU[i - 1] = usageCPU[i - 1];
+            prevTotCPU[i - 1] = totCPU[i - 1];
+            usageCPU[i - 1] = el.at(1).toInt() + el.at(2).toInt() + el.at(3).toInt();
+            totCPU[i - 1] = usageCPU.at(i - 1) + el.at(4).toInt() + el.at(5).toInt();
         }
     }
 }
@@ -36,7 +42,7 @@ int InfoCPU::getNumCPUs() {
 }
 
 double InfoCPU::getAverageCPU(int i) {
-    return (double)usageCPU.at(i)/totCPU.at(i);
+    return (usageCPU.at(i) - prevUsageCPU.at(i))*100.0/(totCPU.at(i) - prevTotCPU.at(i));
 }
 
 bool InfoCPU::openFile() {

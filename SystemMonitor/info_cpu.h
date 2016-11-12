@@ -17,8 +17,10 @@ class InfoCPU {
 
     QString fileData;
     int numCPUs;
-    QVector<int> usageCPU;
-    QVector<int> totCPU;
+    QVector<long> usageCPU;
+    QVector<long> prevUsageCPU;
+    QVector<long> totCPU;
+    QVector<long> prevTotCPU;
 };
 
 #endif // INFOCPU_H

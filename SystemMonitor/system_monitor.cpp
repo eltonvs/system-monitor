@@ -33,7 +33,7 @@ void SystemMonitor::initChartCPU() {
     // Create pens for each CPU and set his name
     for (int i = 0; i < nCPUs; i++) {
         ui->chartCPU->addGraph();
-        ui->chartCPU->graph(i)->setPen(QPen(availableColors.at(i)));
+        ui->chartCPU->graph(i)->setPen(QPen(availableColors.at(i%availableColors.size())));
         ui->chartCPU->graph(i)->setName("CPU " + QString::number(i + 1));
     }
 
@@ -155,11 +155,12 @@ void SystemMonitor::updateChartCPU() {
     // add data to lines:
     icpu.calculate();
     for (int i = 0; i < icpu.getNumCPUs(); i++)
-        ui->chartCPU->graph(i)->addData(key, icpu.getAverageCPU(i)*100.0);
+        ui->chartCPU->graph(i)->addData(key, icpu.getAverageCPU(i));
 
     // make key axis range scroll with the data (at a constant range size of 8):
     ui->chartCPU->xAxis->setRange(key, 60, Qt::AlignRight);
     ui->chartCPU->replot();
+    std::this_thread::sleep_for(std::chrono::milliseconds(750));
 }
 
 void SystemMonitor::updateChartMemory() {

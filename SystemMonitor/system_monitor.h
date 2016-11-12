@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTimer>
 #include <thread>
+#include <chrono>
 #include "info_battery.h"
 #include "info_cpu.h"
 #include "info_memory.h"

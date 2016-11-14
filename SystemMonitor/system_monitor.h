@@ -51,6 +51,7 @@ class SystemMonitor : public QMainWindow {
     std::thread threadMemory;
 
     bool fst;
+    unsigned updateTime;
     QVector<QColor> availableColors;
 
     InfoBattery ib;

@@ -12,6 +12,7 @@ SystemMonitor::SystemMonitor(QWidget *parent) : QMainWindow(parent), ui(new Ui::
     availableColors.append(Qt::cyan);
     availableColors.append(Qt::magenta);
 
+    updateTime = 250;
     fst = true;
 
     qRegisterMetaType<QVector<double> >("QVector<double>");
@@ -162,7 +163,7 @@ void SystemMonitor::chartCPU() {
         for (int i = 0; i < icpu.getNumCPUs(); i++)
             vet.append(icpu.getAverageCPU(i));
         emit(slotUpdateChartCPU(vet));
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::this_thread::sleep_for(std::chrono::milliseconds(updateTime));
     }
 }
 
@@ -170,14 +171,14 @@ void SystemMonitor::chartCharge() {
     while (true) {
         ib.calculate();
         emit(slotUpdateChartCharge(ib.getCurrCharge()));
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::this_thread::sleep_for(std::chrono::milliseconds(updateTime));
     }
 }
 
 void SystemMonitor::chartDischarge() {
     while (true) {
         emit(slotUpdateChartDischarge(ib.getDischargeTime()));
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::this_thread::sleep_for(std::chrono::milliseconds(updateTime));
     }
 }
 
@@ -185,7 +186,7 @@ void SystemMonitor::chartMemory() {
     while (true) {
         im.calculate();
         emit(slotUpdateChartMemory(im.getRAMPercentage(), im.getSwapPercentage()));
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::this_thread::sleep_for(std::chrono::milliseconds(updateTime));
     }
 }
 

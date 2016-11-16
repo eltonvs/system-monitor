@@ -11,15 +11,15 @@ InfoCPU::InfoCPU() {
             el = dataList.at(i).split(" ");
             if (el.at(0).contains("cpu")) {
                 numCPUs++;
-                prevUsageCPU.append(el.at(1).toInt() + el.at(2).toInt() + el.at(3).toInt());
-                prevTotCPU.append(el.at(1).toInt() + el.at(2).toInt() + el.at(3).toInt() + el.at(4).toInt() + el.at(5).toInt());
+                usageCPU.append(el.at(1).toInt() + el.at(2).toInt() + el.at(3).toInt());
+                totCPU.append(el.at(1).toInt() + el.at(2).toInt() + el.at(3).toInt() + el.at(4).toInt() + el.at(5).toInt());
             } else {
                 break;
             }
         }
 
-        usageCPU.resize(numCPUs);
-        totCPU.resize(numCPUs);
+        prevUsageCPU.resize(numCPUs);
+        prevTotCPU.resize(numCPUs);
     }
 }
 

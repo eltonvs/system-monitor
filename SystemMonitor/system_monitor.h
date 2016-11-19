@@ -8,6 +8,7 @@
 #include "info_battery.h"
 #include "info_cpu.h"
 #include "info_memory.h"
+#include "info_process.h"
 
 namespace Ui {
 class SystemMonitor;
@@ -57,6 +58,7 @@ class SystemMonitor : public QMainWindow {
     InfoBattery ib;
     InfoCPU icpu;
     InfoMemory im;
+    InfoProcess ip;
 };
 
 #endif // SYSTEM_MONITOR_H

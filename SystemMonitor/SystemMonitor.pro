@@ -17,12 +17,14 @@ SOURCES += main.cpp \
            info_battery.cpp \
            info_cpu.cpp \
            info_memory.cpp \
+           info_process.cpp
 
 HEADERS  += system_monitor.h \
             qcustomplot.h \
             info_battery.h \
             info_cpu.h \
             info_memory.h \
+            info_process.h
 
 FORMS    += system_monitor.ui
 

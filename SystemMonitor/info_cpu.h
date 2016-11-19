@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QHash>
 #include <QVector>
+#include <QStringList>
 
 class InfoCPU {
  public:

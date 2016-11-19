@@ -3,9 +3,13 @@
 InfoProcess::InfoProcess() {
     populate_process_list();
     PATH = "/home/elton/repo/system_monitor/SystemMonitor/";
+    metric_type = 0;
 }
 
-void InfoProcess::update_json() {
+void InfoProcess::update_json(int metric) {
+    if (metric >= 0)
+        metric_type = metric;
+
     populate_process_list();
 
     std::ofstream json_file(PATH + "processos.json", std::ofstream::trunc);
@@ -20,12 +24,17 @@ void InfoProcess::update_json() {
     json_file.close();
 }
 
+void InfoProcess::kill_process(int pid) {
+    std::string cmd = "kill -9 " + std::to_string(pid);
+    system(cmd.c_str());
+}
+
 void InfoProcess::populate_process_list() {
     // Clear processes map
     processes.clear();
 
     // Create file with all data about process
-    system("ps xao pid,ppid,%mem,\%cpu > proc_list.dat");
+    system("ps xao pid,ppid,pmem,pcpu,thcount,comm > proc_list.dat");
 
     // Open file
     std::ifstream file("proc_list.dat");
@@ -44,11 +53,8 @@ void InfoProcess::populate_process_list() {
         Proc a;
         std::stringstream ss(line);
 
-        ss >> a.pid >> a.ppid >> a.mem_usage >> a.CPU_usage;
-        a.name = get_proc_name(a.pid);
-
-        // Insert on map if has a name
-        if (a.name != "") {
+        ss >> a.pid >> a.ppid >> a.memory >> a.cpu >> a.threads;
+        if (ss >> a.name) {
             processes[a.ppid].push_back(a);
         }
     }
@@ -56,22 +62,6 @@ void InfoProcess::populate_process_list() {
     // Close file and delete him
     file.close();
     system("rm proc_list.dat");
-}
-
-std::string InfoProcess::get_proc_name(int pid) {
-    // Read file that contains the process name
-    std::ifstream p("/proc/" + std::to_string(pid) + "/comm");
-
-    std::string r = "";
-
-    // Verify if the file was opened
-    if (p.is_open()) {
-        // Save the file content on return variable and close file
-        std::getline(p, r);
-        p.close();
-    }
-
-    return r;
 }
 
 std::string InfoProcess::json_father(std::vector<Proc> &v, bool first) {
@@ -82,7 +72,7 @@ std::string InfoProcess::json_father(std::vector<Proc> &v, bool first) {
     int i = 0;
 
     if (!first) oss << ",";
-    oss << "{\"name\": \"" << v[0].name << "\", \"children\": [";
+    oss << "{\"name\":\"" << v[0].name << "\",\"children\":[";
     for (Proc p : v) {
         oss << json_child(p, i++ == 0);
     }
@@ -92,10 +82,21 @@ std::string InfoProcess::json_father(std::vector<Proc> &v, bool first) {
 }
 
 std::string InfoProcess::json_child(Proc &p, bool first) {
+    int metric;
+
+    if (metric_type == 0) {         // CPU
+        metric = (p.cpu + 0.1)*1000;
+    } else if (metric_type == 1) {  // Thread
+        metric = p.threads;
+    } else if (metric_type == 2) {  // Memory
+        metric = (p.memory + 0.1)*1000;
+    } else {                        // Gourmet = average between cpu, threads and memory
+        metric = (p.threads*100 + (p.cpu + 0.1)*1000 + (p.memory + 0.1)*1000)/3;
+    }
+
     std::ostringstream oss;
     if (!first) oss << ",";
-    oss << "{\"name\": \"" << p.name << "\", \"size\": " << (int)(p.CPU_usage * 1000) + 500
-        << ", \"pid\": " << p.pid << "}";
+    oss << "{\"name\":\"" << p.name << "\",\"size\":" << metric << ",\"pid\":" << p.pid << "}";
 
     return oss.str();
 }

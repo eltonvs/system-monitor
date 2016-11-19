@@ -20,6 +20,7 @@ SystemMonitor::SystemMonitor(QWidget *parent) : QMainWindow(parent), ui(new Ui::
     connect(this, SIGNAL(slotUpdateChartCharge(int)), SLOT(updateChartCharge(int)));
     connect(this, SIGNAL(slotUpdateChartDischarge(double)), SLOT(updateChartDischarge(double)));
     connect(this, SIGNAL(slotUpdateChartMemory(double,double)), SLOT(updateChartMemory(double, double)));
+    connect(this, SIGNAL(slotUpdateChartProcess(int)), SLOT(updateChartProcess(int)));
 
     // Init Charts
     initChartCPU();
@@ -248,9 +249,27 @@ void SystemMonitor::updateChartDischarge(double discharge) {
     ui->chartDischarge->replot();
 }
 
-void SystemMonitor::on_pbUpdate_clicked() {
-    ip.update_json();
+void SystemMonitor::updateChartProcess(int metric) {
+    ip.update_json(metric);
     ui->wvProcess->repaint();
     ui->wvProcess->reload();
     ui->wvProcess->update();
+}
+
+//
+// Click Events
+//
+
+void SystemMonitor::on_pbUpdate_clicked() {
+    emit(updateChartProcess(ui->cbFilter->currentIndex()));
+}
+
+void SystemMonitor::on_pbKill_clicked() {
+    int pid = ui->lePID->text().toInt();
+
+    if (pid != 0) {
+        ip.kill_process(pid);
+    }
+
+    emit(updateChartProcess());
 }

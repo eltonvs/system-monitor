@@ -31,14 +31,17 @@ class SystemMonitor : public QMainWindow {
     void slotUpdateChartCharge(int);
     void slotUpdateChartDischarge(double);
     void slotUpdateChartMemory(double, double);
+    void slotUpdateChartProcess(int);
 
  private slots:
     void updateChartCPU(QVector<double>);
     void updateChartCharge(int);
     void updateChartDischarge(double);
     void updateChartMemory(double, double);
+    void updateChartProcess(int metric = 0);
 
     void on_pbUpdate_clicked();
+    void on_pbKill_clicked();
 
 private:
     void chartCPU();

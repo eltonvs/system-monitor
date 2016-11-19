@@ -1,3 +1,6 @@
 # Qt files to be ignored
 *.user
 build*
+
+# generated files
+SystemMonitor/processos.json

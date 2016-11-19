@@ -2,16 +2,20 @@
 
 InfoProcess::InfoProcess() {
     populate_process_list();
+    PATH = "/home/elton/repo/system_monitor/SystemMonitor/";
 }
 
 void InfoProcess::update_json() {
     populate_process_list();
 
-    std::ofstream json_file("processos.json", std::ofstream::trunc);
+    std::ofstream json_file(PATH + "processos.json", std::ofstream::trunc);
 
+    int i = 0;
+    json_file << "{\"name\": \"processos\", \"children\": [";
     for (auto proc_pair : processes) {
-        json_file << json_father(proc_pair.second);
+        json_file << json_father(proc_pair.second, (i++ == 0));
     }
+    json_file << "]}";
 
     json_file.close();
 }
@@ -70,24 +74,28 @@ std::string InfoProcess::get_proc_name(int pid) {
     return r;
 }
 
-std::string InfoProcess::json_father(std::vector<Proc> &v) {
+std::string InfoProcess::json_father(std::vector<Proc> &v, bool first) {
     // Verify if the vector isn't empty
     if (v.empty()) return "";
 
     std::ostringstream oss;
+    int i = 0;
+
+    if (!first) oss << ",";
     oss << "{\"name\": \"" << v[0].name << "\", \"children\": [";
     for (Proc p : v) {
-        oss << json_child(p);
+        oss << json_child(p, i++ == 0);
     }
-    oss << "]},";
+    oss << "]}";
 
     return oss.str();
 }
 
-std::string InfoProcess::json_child(Proc &p) {
+std::string InfoProcess::json_child(Proc &p, bool first) {
     std::ostringstream oss;
-    oss << "{\"name\": \"" << p.name << "\", \"size\": " << (int)(p.CPU_usage * 1000)
-        << ", \"pid\": " << p.pid << "},";
+    if (!first) oss << ",";
+    oss << "{\"name\": \"" << p.name << "\", \"size\": " << (int)(p.CPU_usage * 1000) + 500
+        << ", \"pid\": " << p.pid << "}";
 
     return oss.str();
 }

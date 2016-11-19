@@ -38,7 +38,9 @@ class SystemMonitor : public QMainWindow {
     void updateChartDischarge(double);
     void updateChartMemory(double, double);
 
- private:
+    void on_pbUpdate_clicked();
+
+private:
     void chartCPU();
     void chartCharge();
     void chartDischarge();

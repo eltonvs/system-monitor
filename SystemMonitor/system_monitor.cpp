@@ -27,6 +27,10 @@ SystemMonitor::SystemMonitor(QWidget *parent) : QMainWindow(parent), ui(new Ui::
     initChartCharge();
     initChartDischarge();
 
+    ip.update_json();
+
+    ui->wvProcess->load(QUrl::fromLocalFile(QString::fromStdString(ip.PATH) + "index.html"));
+
     run();
 }
 
@@ -242,4 +246,11 @@ void SystemMonitor::updateChartDischarge(double discharge) {
     // make key axis range scroll with the data (at a constant range size of 8):
     ui->chartDischarge->xAxis->setRange(key, 60, Qt::AlignRight);
     ui->chartDischarge->replot();
+}
+
+void SystemMonitor::on_pbUpdate_clicked() {
+    ip.update_json();
+    ui->wvProcess->repaint();
+    ui->wvProcess->reload();
+    ui->wvProcess->update();
 }

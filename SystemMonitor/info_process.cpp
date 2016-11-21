@@ -17,7 +17,7 @@ void InfoProcess::update_json(int metric) {
     int i = 0;
     json_file << "{\"name\": \"processos\", \"children\": [";
     for (auto proc_pair : processes) {
-        json_file << json_father(proc_pair.second, (i++ == 0));
+        json_file << (i++ == 0 ? "" : ",") << json_father(proc_pair.second);
     }
     json_file << "]}";
 
@@ -64,24 +64,23 @@ void InfoProcess::populate_process_list() {
     system("rm proc_list.dat");
 }
 
-std::string InfoProcess::json_father(std::vector<Proc> &v, bool first) {
+std::string InfoProcess::json_father(std::vector<Proc> &v) {
     // Verify if the vector isn't empty
     if (v.empty()) return "";
 
     std::ostringstream oss;
     int i = 0;
 
-    if (!first) oss << ",";
     oss << "{\"name\":\"" << v[0].name << "\",\"children\":[";
     for (Proc p : v) {
-        oss << json_child(p, i++ == 0);
+        oss << (i++ == 0 ? "" : ",") << json_child(p);
     }
     oss << "]}";
 
     return oss.str();
 }
 
-std::string InfoProcess::json_child(Proc &p, bool first) {
+std::string InfoProcess::json_child(Proc &p) {
     int metric;
 
     if (metric_type == 0) {         // CPU
@@ -95,7 +94,6 @@ std::string InfoProcess::json_child(Proc &p, bool first) {
     }
 
     std::ostringstream oss;
-    if (!first) oss << ",";
     oss << "{\"name\":\"" << p.name << "\",\"size\":" << metric << ",\"pid\":" << p.pid << "}";
 
     return oss.str();

@@ -25,8 +25,8 @@ class InfoProcess {
 
  private:
     void populate_process_list();
-    std::string json_father(std::vector<Proc> &v, bool first = true);
-    std::string json_child(Proc &p, bool first = true);
+    std::string json_father(std::vector<Proc> &v);
+    std::string json_child(Proc &p);
 
     std::map<int, std::vector<Proc>> processes;
     int metric_type;

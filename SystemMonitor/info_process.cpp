@@ -2,7 +2,7 @@
 
 InfoProcess::InfoProcess() {
     populate_process_list();
-    PATH = "/home/elton/repo/system_monitor/SystemMonitor/";
+    PATH = "";
     metric_type = 0;
 }
 

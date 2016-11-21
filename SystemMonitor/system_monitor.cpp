@@ -12,8 +12,12 @@ SystemMonitor::SystemMonitor(QWidget *parent) : QMainWindow(parent), ui(new Ui::
     availableColors.append(Qt::cyan);
     availableColors.append(Qt::magenta);
 
-    updateTime = 250;
+    // Start some things
     fst = true;
+    updateTime = 250;
+
+    // Set InfoProcess path
+    ip.PATH = "/home/elton/repo/system_monitor/SystemMonitor/";
 
     qRegisterMetaType<QVector<double> >("QVector<double>");
     connect(this, SIGNAL(slotUpdateChartCPU(QVector<double>)), SLOT(updateChartCPU(QVector<double>)));
@@ -28,8 +32,8 @@ SystemMonitor::SystemMonitor(QWidget *parent) : QMainWindow(parent), ui(new Ui::
     initChartCharge();
     initChartDischarge();
 
+    // Start Process Area
     ip.update_json();
-
     ui->wvProcess->load(QUrl::fromLocalFile(QString::fromStdString(ip.PATH) + "index.html"));
 
     run();
@@ -41,10 +45,10 @@ SystemMonitor::~SystemMonitor() {
 
 void SystemMonitor::run() {
     if (fst) {
-        threadCPU = std::thread(&SystemMonitor::chartCPU, this);
-        threadCharge = std::thread(&SystemMonitor::chartCharge, this);
+        threadCPU       = std::thread(&SystemMonitor::chartCPU, this);
+        threadCharge    = std::thread(&SystemMonitor::chartCharge, this);
         threadDischarge = std::thread(&SystemMonitor::chartDischarge, this);
-        threadMemory = std::thread(&SystemMonitor::chartMemory, this);
+        threadMemory    = std::thread(&SystemMonitor::chartMemory, this);
         fst = false;
     }
 }
